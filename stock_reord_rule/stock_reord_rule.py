@@ -2,7 +2,7 @@
 ##############################################################################
 #
 #    Smart reordering rules for Bahmni OpenERP
-#    Copyright (C) 2017 Ajeenckya Garewat (<https://www.satvix.com>)
+#    Copyright (C) 2017 Ajeenckya Gadewar (<https://www.satvix.com>)
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU Affero General Public License as

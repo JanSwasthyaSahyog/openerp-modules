@@ -2,8 +2,8 @@
 
 # Steps for deployment: Follow these steps if you are deploying modules in this repository for the first time
 1. Clone this repository on server using following commands:
-cd /opt/bahmni-erp
-git clone https://github.com/JanSwasthyaSahyog/openerp-modules.git
+	a. cd /opt/bahmni-erp;
+	b. git clone https://github.com/JanSwasthyaSahyog/openerp-modules.git
 
 2. Go to path on server: cd /opt/bahmni-erp/etc
 
