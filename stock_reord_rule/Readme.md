@@ -4,27 +4,27 @@
 
 2. You will see a new Section been added "Stock Procurement By Days" having 3 fields
 
-	a. Days of needed warehouse stock: Number of days for which you would like to maintain the stock
-	b. Days of sale statistics: This module will calculate total sale in given number of days  
-	c. Expected sales variation (percent +/-): This number will be used to increase/decrease the total required quantity as per given percentage.
+	a. Days of needed warehouse stock: Number of days for which you would like to maintain the stock<br />
+	b. Days of sale statistics: This module will calculate total sale for given number of days<br />
+	c. Expected sales variation (percent +/-): This number will be used to increase/decrease the total required quantity as per given percentage
 
 3. Add a default Supplier in the same section if it is not present
 
-4. Click on Orderpoints in the top right corner of Product Section.
+4. Click on Orderpoints in the top right corner of Product Section
 
-5. Click on "Create". OpenERP will put all the default values; change the values like Warehouse, Location, etc as per the requirement and "Save". Make sure yoe keep "Minimum Quantity" and "Maximum Quantity" as "0.00" which is default.
+5. Click on "Create". OpenERP will put all the default values; change the values like Warehouse, Location, etc as per the requirement and "Save". Make sure you keep "Minimum Quantity" and "Maximum Quantity" as "0.00" which is default
 
 Above steps will have to be done for all products.
 
 # Steps to setup cron
 
-1. On installation of this module, it will create the Scheduler in section: Openerp > Settings > Scheduler > Scheduled Actions with a name: Update quantity for reordering rules
+1. On installation of this module, it will create the Scheduler in section: Openerp > Settings > Scheduler > Scheduled Actions with a name: "Update quantity for reordering rules"
 
 2. Interval Unit: Can be changed to Minutes, Hours, Days, Weeks, Months
 
-3. Interval Number: This is the frequency of occurence for above unit
+3. Interval Number: This is the frequency of occurrence for above unit
 
-4. Keep other settings unchanged.
+Keep other settings unchanged.
 
 # Impact Areas
 
