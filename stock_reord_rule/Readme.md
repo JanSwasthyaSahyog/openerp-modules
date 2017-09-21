@@ -1,6 +1,6 @@
 # Usage:
 
-1. Open any Product page and go in Procurements Sections.
+1. Open any Product page and go in Procurements Section. For example: Click on OpenERP > Purchases > Products > Aceclofenac
 
 2. You will see a new Section been added "Stock Procurement By Days" having 3 fields
 
@@ -18,7 +18,7 @@ Above steps will have to be done for all products.
 
 # Steps to setup cron
 
-1. On installation of this module, it will create the Scheduler in section: Openerp > Settings > Scheduler > Scheduled Actions with a name: "Update quantity for reordering rules"
+1. On installation of this module, it will create two Schedulers in section: Openerp > Settings > Scheduler > Scheduled Actions with a name: "Update quantity for reordering rules" and "Run Purchase Scheduler"
 
 2. Interval Unit: Can be changed to Minutes, Hours, Days, Weeks, Months
 
@@ -30,7 +30,7 @@ Keep other settings unchanged.
 
 As and when the cron will run, depending on the current available stock quantity, Days of needed warehouse stock, Days of sale statistics, Expected sales variation; this module will update Minimum Quantity and Maximum Quantity in OpenERP > Warehouse > Configuration > Reordering Rules
 
-# Action to be taken for creating Purchase Order
+# Action to be taken for creating Purchase Order - Manual (Cron will create PO in draft mode as per the set frequency in above steps)
 
 1. Click on OpenERP > Warehouse > Schedulers > Run Scheduler(tick "Automatic Orderpoint"). 
 
