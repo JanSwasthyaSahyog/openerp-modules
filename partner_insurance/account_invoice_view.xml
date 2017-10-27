@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		
+		<record id="view_account_invoice_inherit" model="ir.ui.view"> 
+			<field name="name">view.account.invoice.inherit</field>
+			<field name="model">account.invoice</field>
+			<field name="inherit_id" ref="account.invoice_form"/>
+			<field name="arch" type="xml">
+				<field name="move_id" position="after">
+					<field name="insurance_invoice" invisible="1"/>
+				</field>
+				<field name="journal_id" position="attributes">
+					<attribute name="attrs">{'invisible': [('insurance_invoice', '=', True)]}</attribute>
+				</field>
+				<field name="journal_id" position="after">
+					<field name="dummy_journal" domain="[('type', '=', 'insurance')]" 
+					attrs="{'invisible': [('insurance_invoice', '=', False)]}"/>
+				</field>
+			</field>			
+		</record>
+		
+	</data>
+</openerp>

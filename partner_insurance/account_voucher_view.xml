@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+	<data>
+		
+		<record id="form_register_payment_inherit" model="ir.ui.view">
+			<field name="name">form.register.payment.inherit</field>
+			<field name="model">account.voucher</field>
+			<field name="inherit_id" ref="account_voucher.view_vendor_receipt_dialog_form"/>
+			<field name="arch" type="xml">
+				
+				<field name="journal_id" position="replace">
+					<field name="journal_id" domain="[('type','in',['bank', 'cash', 'insurance'])]" 
+					  invisible="context.get('line_type', False)" widget="selection" 
+					  on_change="onchange_journal(journal_id, line_cr_ids, False, partner_id, date, amount, type, company_id, context)" 
+					  string="Payment Method"/>
+					<field name="insurance_policy_id"
+						attrs="{'invisible': [('is_insurance_journal', '=', False)],
+								'required': [('is_insurance_journal', '=', True)]}"  />
+					<field name="is_insurance_journal" invisible="1"/>				
+				</field>
+				<field name="amount" position="attributes">
+					<attribute name="attrs">{'invisible': [('is_insurance_journal', '=', True)]}</attribute>
+				</field>
+				<field name="amount" position="after">
+					<field name="dummy_amount" readonly="1" 
+						attrs="{'invisible': [('is_insurance_journal', '=', False)]}"/>
+				</field>
+			</field>			
+		</record>
+		
+		<record id="jss_invoice_form_add_discount_inherit" model="ir.ui.view">
+			<field name="name">jss.invoice.form.add.discount.inherit</field>
+			<field name="model">account.voucher</field>
+			<field name="inherit_id" ref="bahmni_customer_payment.jss_invoice_form_add_discount"/>
+			<field name="arch" type="xml">
+				<field name="journal_id" position="replace">
+					<field name="journal_id" domain="[('type','in',['cash', 'insurance'])]" 
+					  invisible="context.get('line_type', False)" widget="selection" 
+					  on_change="onchange_journal(journal_id, line_cr_ids, False, partner_id, date, amount, type, company_id, context)" 
+					  string="Payment Method" context="{'is_insurance_journal': is_insurance_journal}" />
+					<field name="insurance_policy_id"
+						attrs="{'invisible': [('is_insurance_journal', '=', False)],
+								'required': [('is_insurance_journal', '=', True)]}"  />
+					<field name="is_insurance_journal" invisible="1"/>				
+				</field>
+			</field>			
+		</record>
+		
+	</data>
+</openerp>
