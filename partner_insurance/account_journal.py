@@ -10,7 +10,7 @@ class account_journal(osv.osv):
                               ('purchase', 'Purchase'), ('purchase_refund','Purchase Refund'),
                               ('cash', 'Cash'), ('bank', 'Bank and Checks'), ('general', 'General'),
                               ('situation', 'Opening/Closing Situation'),('insurance', 'Insurance')],
-                              'Type', size=32, required=True,
+                              'Type', size=32, required=False,
                                  help="Select 'Sale' for customer invoices journals."\
                                  " Select 'Purchase' for supplier invoices journals."\
                                  " Select 'Cash' or 'Bank' for journals that are used in customer or supplier payments."\
