@@ -48,6 +48,27 @@ class stock_production_lot(osv.osv):
             store={'stock.production.lot': (lambda self, cr, uid, ids, c={}: ids, None, 20)}),
     }
 
+    def _get_if_expiring_in_30_days(self, cr, uid, ids, field_name, arg, context=None):
+        """get if prodlots is expired based on life_date"""
+        if context is None: context = {}
+        res = {}
+        for obj_prodlot_id in self.browse(cr, uid, ids):
+            if obj_prodlot_id.life_date:
+                value = False
+                #check if prodlot is expired
+                if (datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") > datetime.now()
+                    and datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") < datetime.timedelta(days=30)):
+                    value = True
+                res[obj_prodlot_id.id] = value
+            else:
+                res[obj_prodlot_id.id] = False
+        return res
+
+    _columns = {
+        'expire_30': fields.function(_get_if_expiring_in_30_days, method=True, type="boolean", string="Expiring in 30 days",
+            store={'stock.production.lot': (lambda self, cr, uid, ids, c={}: ids, None, 20)}),
+    }
+
     #pylint: disable-msg=W0613
     def searchfor_expired_prodlots(self, cr, uid, automatic=False, use_new_cursor=False, context=None):
         """cron that search for expired prodlots and mark its with expired everyday, send a notification too"""
