@@ -13,8 +13,14 @@
                 <field name="date" position="after">
                     <field name="expired" readonly="1"/>
                 </field>
-                <field name="date" position="after">
+                <field name="expired" position="after">
                     <field name="expire_30" readonly="1"/>
+                </field>
+                <field name="expire_30" position="after">
+                    <field name="expire_30_60" readonly="1"/>
+                </field>
+                <field name="expire_30_60" position="after">
+                    <field name="expire_60_90" readonly="1"/>
                 </field>
             </field>
         </record>
@@ -30,8 +36,14 @@
                 <field name="date" position="after">
                     <field name="expired"/>
                 </field>
-                <field name="date" position="after">
+                <field name="expired" position="after">
                     <field name="expire_30" />
+                </field>
+                <field name="expire_30" position="after">
+                    <field name="expire_30_60" />
+                </field>
+                <field name="expire_30_60" position="after">
+                    <field name="expire_60_90"/>
                 </field>
             </field>
         </record>
@@ -45,8 +57,14 @@
                 <filter name="available" position="after">
                     <filter icon="gtk-dialog-error" name="expired" string="Expired" domain="[('expired', '=', True)]" help="Production lots expired"/>
                 </filter>
-                <filter name="available" position="after">
+                <filter name="expired" position="after">
                     <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="[('expire_30', '=', True)]" help="Production lots expiring in 30 days"/>
+                </filter>
+                <filter name="expire_30" position="after">
+                    <filter icon="gtk-dialog-error" name="expire_30_60" string="Expiring in 30 to 60 days" domain="[('expire_30_60', '=', True)]" help="Production lots expiring in 30 to 60 days"/>
+                </filter>
+                <filter name="expire_30_60" position="after">
+                    <filter icon="gtk-dialog-error" name="expire_60_90" string="Expiring in 60 to 90 days" domain="[('expire_60_90', '=', True)]" help="Production lots expiring in 60 to 90 days"/>
                 </filter>
             </field>
         </record>
