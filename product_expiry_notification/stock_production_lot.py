@@ -67,7 +67,7 @@ class stock_production_lot(osv.osv):
             if obj_prodlot_id.life_date:
                 value = False
                 #check if prodlot is expired
-                if (datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") > (datetime.now()+timedelta(days=30))
+                if (datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") >= (datetime.now()+timedelta(days=30))
                     and datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") < (datetime.now()+timedelta(days=60))):
                     value = True
                 res[obj_prodlot_id.id] = value
@@ -83,7 +83,7 @@ class stock_production_lot(osv.osv):
             if obj_prodlot_id.life_date:
                 value = False
                 #check if prodlot is expired
-                if (datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") > (datetime.now()+timedelta(days=60))
+                if (datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") >= (datetime.now()+timedelta(days=60))
                     and datetime.strptime(obj_prodlot_id.life_date, "%Y-%m-%d %H:%M:%S") < (datetime.now()+timedelta(days=90))):
                     value = True
                 res[obj_prodlot_id.id] = value
