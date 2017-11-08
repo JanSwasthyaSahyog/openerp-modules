@@ -43,11 +43,6 @@ class stock_production_lot(osv.osv):
                 res[obj_prodlot_id.id] = False
         return res
 
-    _columns = {
-        'expired': fields.function(_get_if_expired, method=True, type="boolean", string="Expired",
-            store={'stock.production.lot': (lambda self, cr, uid, ids, c={}: ids, None, 20)}),
-    }
-
     def _get_if_expiring_in_30_days(self, cr, uid, ids, field_name, arg, context=None):
         """get if prodlots is expired based on life_date"""
         if context is None: context = {}
@@ -65,8 +60,10 @@ class stock_production_lot(osv.osv):
         return res
 
     _columns = {
-        'expire_30': fields.function(_get_if_expiring_in_30_days, method=True, type="boolean", string="Expiring in 30 days",
+        'expired': fields.function(_get_if_expired, method=True, type="boolean", string="Expired",
             store={'stock.production.lot': (lambda self, cr, uid, ids, c={}: ids, None, 20)}),
+        'expire_30': fields.function(_get_if_expiring_in_30_days, method=True, type="boolean", string="Expiring in 30 days",
+            store={'stock.production.lot': (lambda self, cr, uid, ids, c={}: ids, None, 20)})
     }
 
     #pylint: disable-msg=W0613
