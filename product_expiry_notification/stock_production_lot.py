@@ -21,7 +21,7 @@
 """inherits from stock.production.lot adds functionally for warn prodlot expiration"""
 
 from osv import osv, fields
-from datetime import datetime
+from datetime import datetime, timedelta
 from tools.translate import _
 
 class stock_production_lot(osv.osv):

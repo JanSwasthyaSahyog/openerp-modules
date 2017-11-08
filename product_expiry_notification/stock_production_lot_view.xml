@@ -12,6 +12,8 @@
             <field name="arch" type="xml">
                 <field name="date" position="after">
                     <field name="expired" readonly="1"/>
+                </field>
+                <field name="expired" position="after">
                     <field name="expire_30" readonly="1"/>
                 </field>
             </field>
@@ -27,6 +29,8 @@
             <field name="arch" type="xml">
                 <field name="date" position="after">
                     <field name="expired"/>
+                </field>
+                <field name="expired" position="after">
                     <field name="expire_30" />
                 </field>
             </field>
@@ -40,6 +44,8 @@
             <field name="arch" type="xml">
                 <filter name="available" position="after">
                     <filter icon="gtk-dialog-error" name="expired" string="Expired" domain="[('expired', '=', True)]" help="Production lots expired"/>
+                </filter>
+                <filter name="expired" position="after">
                     <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="[('expire_30', '=', True)]" help="Production lots expiring in 30 days"/>
                 </filter>
             </field>
