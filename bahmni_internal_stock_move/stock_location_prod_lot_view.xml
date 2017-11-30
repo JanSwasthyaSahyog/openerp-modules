@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="stock_product_lot_extended_tree_view" model="ir.ui.view">
+            <field name="name">prodlots.report.tree</field>
+            <field name="model">prodlots.report</field>
+            <field eval="7" name="priority"/>
+            <field name="arch" type="xml">
+
+                <tree  string="Product Lots" colors="red:qty&lt;=reorder_level">
+                    <field name="prodlot_id" />
+                    <field name="product_id"/>
+                    <field name="reorder_level"/>
+                    <field name="life_date"/>
+                    <field name="location_id"/>
+                    <field name="qty" />
+                    <field name="unit_id" />
+                    <field name="category"/>
+                    <field name="list_price"/>
+                    <field name="value"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_stock_product_lot_extended_filter" model="ir.ui.view">
+            <field name="name">prodlots.report.filter</field>
+            <field name="model">prodlots.report</field>
+            <field name="arch" type="xml">
+                <search string="Search Prodlots">
+                    <field name="location_id"/>
+                    <field name="product_id"/>
+                    <field name="prodlot_id"/>
+                                            <filter icon="gtk-dialog-error" name="expired" string="Expired" domain="[('expired', '=', True)]" help="Production lots expired"/>
+                        <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="[('expire_30', '=', True)]" help="Production lots expiring in 30 days"/>
+                        <filter icon="gtk-dialog-error" name="expire_30_60" string="Expiring in 30 to 60 days" domain="[('expire_30_60', '=', True)]" help="Production lots expiring in 30 to 60 days"/>
+                        <filter icon="gtk-dialog-error" name="expire_60_90" string="Expiring in 60 to 90 days" domain="[('expire_60_90', '=', True)]" help="Production lots expiring in 60 to 90 days"/>
+                </search>
+            </field>
+        </record>
+    </data>
+</openerp>
