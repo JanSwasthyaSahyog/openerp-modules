@@ -81,7 +81,8 @@ class account_voucher(osv.osv):
                                              'date_invoice': voucher.date,
                                              'insurance_invoice': True,
                                              'dummy_journal': voucher.journal_id.id,
-                                             'origin': invoice_obj.number}
+                                             'origin': invoice_obj.number,
+                                             'origin_name': voucher.partner_id.name}
                             new_invoice = self.pool.get('account.invoice').copy(cr, uid, context.get('invoice_id'), default=default_vals)
                         cr.execute('insert into sale_order_invoice_rel(order_id, invoice_id) values (%d, %d)'%(order_id, new_invoice))
                     else:
@@ -90,7 +91,8 @@ class account_voucher(osv.osv):
                                          'date_invoice': voucher.date,
                                          'insurance_invoice': True,
                                          'dummy_journal': voucher.journal_id.id,
-                                         'origin': invoice_obj.number}
+                                         'origin': invoice_obj.number,
+                                             'origin_name': voucher.partner_id.name}
                         new_invoice = self.pool.get('account.invoice').copy(cr, uid, context.get('invoice_id'), default=default_vals)
         return res
     
@@ -116,7 +118,8 @@ class account_voucher(osv.osv):
                                              'date_invoice': voucher.date,
                                              'insurance_invoice': True,
                                              'dummy_journal': voucher.journal_id.id,
-                                             'origin': voucher.invoice_id.number}
+                                             'origin': voucher.invoice_id.number,
+                                             'origin_name': voucher.partner_id.name}
                             new_invoice = self.pool.get('account.invoice').copy(cr, uid, voucher.invoice_id.id, default=default_vals)
                         cr.execute('insert into sale_order_invoice_rel(order_id, invoice_id) values (%d, %d)'%(order_id, new_invoice))
                     else:
@@ -125,7 +128,8 @@ class account_voucher(osv.osv):
                                          'date_invoice': voucher.date,
                                          'insurance_invoice': True,
                                          'dummy_journal': voucher.journal_id.id,
-                                         'origin': voucher.invoice_id.number}
+                                         'origin': voucher.invoice_id.number,
+                                         'origin_name': voucher.partner_id.name}
                         new_invoice = self.pool.get('account.invoice').copy(cr, uid, voucher.invoice_id.id, default=default_vals)
                 return res
         else:

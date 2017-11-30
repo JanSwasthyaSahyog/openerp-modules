@@ -8,5 +8,6 @@ class account_invoice(osv.osv):
     
     _columns = {
         'insurance_invoice': fields.boolean('Is Insurance Invoice?') ,
-        'dummy_journal': fields.many2one('account.journal', 'Journal')  
+        'dummy_journal': fields.many2one('account.journal', 'Journal'),
+        'origin_name': fields.char('Source Name', size=64),
         }
