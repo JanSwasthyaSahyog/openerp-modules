@@ -39,4 +39,3 @@
         </record>
     </data>
 </openerp>
- <filter icon="terp-check" name="available" string="Available" domain="[('stock_available', '&gt;', 0)]" help="Available Product Lots"/>
