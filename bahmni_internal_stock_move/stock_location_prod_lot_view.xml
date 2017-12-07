@@ -30,12 +30,13 @@
                     <field name="location_id"/>
                     <field name="product_id"/>
                     <field name="prodlot_id"/>
-                                            <filter icon="gtk-dialog-error" name="expired" string="Expired" domain="[('expired', '=', True)]" help="Production lots expired"/>
-                        <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="[('expire_30', '=', True)]" help="Production lots expiring in 30 days"/>
-                        <filter icon="gtk-dialog-error" name="expire_30_60" string="Expiring in 30 to 60 days" domain="[('expire_30_60', '=', True)]" help="Production lots expiring in 30 to 60 days"/>
-                        <filter icon="gtk-dialog-error" name="expire_60_90" string="Expiring in 60 to 90 days" domain="[('expire_60_90', '=', True)]" help="Production lots expiring in 60 to 90 days"/>
+                                            <filter icon="gtk-dialog-error" name="expired" string="Expired" domain="['&amp;',('expired', '=', True),('qty', '&gt;', 0)]" help="Production lots expired"/>
+                        <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="['&amp;',('expire_30', '=', True),('qty', '&gt;', 0)]" help="Production lots expiring in 30 days"/>
+                        <filter icon="gtk-dialog-error" name="expire_30_60" string="Expiring in 30 to 60 days" domain="['&amp;',('expire_30_60', '=', True),('qty', '&gt;', 0)]" help="Production lots expiring in 30 to 60 days"/>
+                        <filter icon="gtk-dialog-error" name="expire_60_90" string="Expiring in 60 to 90 days" domain="['&amp;',('expire_60_90', '=', True),('qty', '&gt;', 0)]" help="Production lots expiring in 60 to 90 days"/>
                 </search>
             </field>
         </record>
     </data>
 </openerp>
+ <filter icon="terp-check" name="available" string="Available" domain="[('stock_available', '&gt;', 0)]" help="Available Product Lots"/>
