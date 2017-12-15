@@ -34,6 +34,9 @@
                         <filter icon="gtk-dialog-error" name="expire_30" string="Expiring in 30 days" domain="['&amp;',('expire_30', '=', True),('qty', '&gt;', 0.0)]" help="Production lots expiring in 30 days"/>
                         <filter icon="gtk-dialog-error" name="expire_30_60" string="Expiring in 30 to 60 days" domain="['&amp;',('expire_30_60', '=', True),('qty', '&gt;', 0.0)]" help="Production lots expiring in 30 to 60 days"/>
                         <filter icon="gtk-dialog-error" name="expire_60_90" string="Expiring in 60 to 90 days" domain="['&amp;',('expire_60_90', '=', True),('qty', '&gt;', 0.0)]" help="Production lots expiring in 60 to 90 days"/>
+                        <group  expand='0' string='Group by'>
+                            <filter string='Location' icon="terp-mrp" domain="[]" context="{'group_by' : 'location_id'}"/>
+                    </group>
                 </search>
             </field>
         </record>
