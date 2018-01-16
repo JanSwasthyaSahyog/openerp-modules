@@ -46,7 +46,7 @@ class stock_warehouse_orderpoint(orm.Model):
         JOIN product_template pt ON pt.id = pp.product_tmpl_id
         WHERE sl.name='Stock Room'
         AND sp.type in ('internal','out')
-        AND sm.product_id IN %s AND AND sm.date > (date(now()) - pp.days_stats)
+        AND sm.product_id IN %s AND sm.date > (date(now()) - pp.days_stats)
         GROUP BY sm.product_id,
                  pp.days_stats,
                  pp.forecast_gap,
