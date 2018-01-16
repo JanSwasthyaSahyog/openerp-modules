@@ -35,9 +35,9 @@ class stock_warehouse_orderpoint(orm.Model):
         obj_product = self.pool.get('product.product')
         product_ids = tuple(obj_product.search(cr, uid, [], context=context))
         sql = """
-        SELECT sm.product_id AS product_id,
-               round(sum(product_uos_qty) / pp.days_stats *
-                   (1 + pp.forecast_gap / 100) * pp.days_warehouse)
+         SELECT sm.product_id AS product_id,
+               round(sum(product_qty) / pp.days_stats *
+                   (1 + 1 / 100) * pp.days_warehouse)
                AS quantity
         FROM stock_move sm
         JOIN stock_location sl ON sl.id = sm.location_id
@@ -45,8 +45,8 @@ class stock_warehouse_orderpoint(orm.Model):
         JOIN product_product pp ON pp.id = sm.product_id
         JOIN product_template pt ON pt.id = pp.product_tmpl_id
         WHERE sl.name='Stock Room'
-        AND sp.type = 'out'
-        AND sm.product_id IN %s AND sm.date > (date(now()) - pp.days_stats)
+        AND sp.type in ('internal','out')
+        AND sm.product_id IN %s AND AND sm.date > (date(now()) - pp.days_stats)
         GROUP BY sm.product_id,
                  pp.days_stats,
                  pp.forecast_gap,
