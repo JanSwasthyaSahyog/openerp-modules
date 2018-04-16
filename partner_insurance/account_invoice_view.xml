@@ -10,13 +10,18 @@
 				<field name="move_id" position="after">
 					<field name="insurance_invoice" invisible="1"/>
 				</field>
-				<field name="journal_id" position="attributes">
-					<attribute name="attrs">{'invisible': [('insurance_invoice', '=', True)]}</attribute>
+				<field name="journal_id" position="replace">
+					<field name="journal_id" groups="account.group_account_user" 
+					on_change="onchange_journal_id(journal_id, context)" 
+					context="{'journal_type': context.get('journal_type'), 'insurance_invoice': insurance_invoice}"
+					options="{'create_edit': False}"/>
 				</field>
-				<field name="journal_id" position="after">
-					<field name="dummy_journal" domain="[('type', '=', 'insurance')]" 
-					attrs="{'invisible': [('insurance_invoice', '=', False)]}"/>
-				</field>
+<!--					<attribute name="attrs">{'invisible': [('insurance_invoice', '=', True)]}</attribute>-->
+<!--				</field>-->
+<!--				<field name="journal_id" position="after">-->
+<!--					<field name="dummy_journal" domain="[('type', '=', 'insurance')]" -->
+<!--					attrs="{'invisible': [('insurance_invoice', '=', False)]}"/>-->
+<!--				</field>-->
 			</field>			
 		</record>
 		

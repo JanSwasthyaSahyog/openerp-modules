@@ -7,7 +7,7 @@ In Account Invoice provide user to select insurance for payment
 ===============================================================
         """,
     'version': '1.0',
-    'depends':['bahmni_customer_payment'],
+    'depends':['web_m2x_options','bahmni_customer_payment'],
     'data': ['insurance_schemes_view.xml',
              'account_journal_view.xml',
              'account_voucher_view.xml',

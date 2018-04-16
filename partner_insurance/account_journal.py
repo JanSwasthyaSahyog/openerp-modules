@@ -18,3 +18,11 @@ class account_journal(osv.osv):
                                  " Select 'Opening/Closing Situation' for entries generated for new fiscal years."\
                                  " Select Insurance for making payment of invoices with insurance policy."),
     }
+    
+    def search(self, cr, uid, args, offset=0, limit=None, order=None, context=None, count=False):
+        if context and context.get('insurance_invoice'):
+            journal_type = context.get('journal_type')
+            if ('type', '=', context.get('journal_type')) in args:
+                args.remove(('type', '=', context.get('journal_type')))
+                args.append(('type', '=', 'insurance'))
+        return super(account_journal, self).search(cr, uid, args, offset, limit, order, context, count)

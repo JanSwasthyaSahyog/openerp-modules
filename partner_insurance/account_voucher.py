@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from openerp.osv import fields, osv
-from openerp.tools.translate import _
-
+import types
 import logging
 _logger = logging.getLogger(__name__)
+
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
 
 
 class account_voucher(osv.osv):
@@ -29,10 +30,10 @@ class account_voucher(osv.osv):
                         invoice_obj = self.pool.get('account.invoice').browse(cr, uid, invoice_id)
                         if amount:
                             if invoice_obj.amount_total != invoice_obj.residual or amount < invoice_obj.amount_total:
-                                res['warning'] = {
-                                    'title': _('Validation Error!'),
-                                    'message' : _('You can not use %s payment method for partial payment.')%(journal.name)
-                                }
+                                res.update({'warning': {'title': _('Validation Error!'),
+                                                        'message' : _('You can not use %s payment method for partial payment.')%(journal.name)
+                                                        }
+                                            })
                         account_id = journal.default_debit_account_id
                         if not account_id:
                             raise osv.except_osv(_('Error!'),
@@ -80,7 +81,7 @@ class account_voucher(osv.osv):
                                              'journal_id': voucher.journal_id.id,
                                              'date_invoice': voucher.date,
                                              'insurance_invoice': True,
-                                             'dummy_journal': voucher.journal_id.id,
+#                                              'dummy_journal': voucher.journal_id.id,
                                              'origin': invoice_obj.number,
                                              'origin_name': voucher.partner_id.name + '-' + voucher.partner_id.ref}
                             new_invoice = self.pool.get('account.invoice').copy(cr, uid, context.get('invoice_id'), default=default_vals)
@@ -90,7 +91,7 @@ class account_voucher(osv.osv):
                                          'journal_id': voucher.journal_id.id,
                                          'date_invoice': voucher.date,
                                          'insurance_invoice': True,
-                                         'dummy_journal': voucher.journal_id.id,
+#                                          'dummy_journal': voucher.journal_id.id,
                                          'origin': invoice_obj.number,
                                         'origin_name': voucher.partner_id.name + '-' + voucher.partner_id.ref }
                         new_invoice = self.pool.get('account.invoice').copy(cr, uid, context.get('invoice_id'), default=default_vals)
@@ -100,38 +101,76 @@ class account_voucher(osv.osv):
         voucher = self.browse(cr, uid, ids)
         if voucher: voucher = voucher and voucher[0]
         if voucher.journal_id.type == 'insurance':
-            if voucher.amount < voucher.invoice_id.amount_total:
-                raise osv.except_osv(_('Error!'),
-                                        _('You can not use %s payment method for partial payment.')%(voucher.journal_id.name))
-            else:
-                res = super(account_voucher, self).proforma_voucher(cr, uid, ids, context)
-       
-                if voucher.invoice_id:
-    #                sale_advance_payment_inv_id = sale_advance_payment_inv_pool.create(cr, uid, wizard_vals)
-                    cr.execute('select order_id from sale_order_invoice_rel where invoice_id=%d'%(voucher.invoice_id.id))
-                    result = cr.fetchone()
-                    if result:
-                        order_id = result and result[0]
-                        if voucher.invoice_id:
-                            default_vals =  {'partner_id': voucher.insurance_policy_id.partner_id.id,
-                                             'journal_id': voucher.journal_id.id,
-                                             'date_invoice': voucher.date,
-                                             'insurance_invoice': True,
-                                             'dummy_journal': voucher.journal_id.id,
-                                             'origin': voucher.invoice_id.number,
-                                             'origin_name': voucher.partner_id.name + '-' + voucher.partner_id.ref}
-                            new_invoice = self.pool.get('account.invoice').copy(cr, uid, voucher.invoice_id.id, default=default_vals)
-                        cr.execute('insert into sale_order_invoice_rel(order_id, invoice_id) values (%d, %d)'%(order_id, new_invoice))
-                    else:
+            invoice_line_values = []
+            for line in voucher.line_cr_ids:
+                if line.amount:
+                    invoice_line_ids = [x.id for x in line.move_line_id.invoice.invoice_line]
+                    print ""
+                    invoice_lines = self.pool.get('account.invoice.line').read(cr, uid, invoice_line_ids,
+                                                                               ['uos_id','account_id','sequence', 
+                                                                                'price_unit', 'price_subtotal', 
+                                                                                'company_id', 'name', 'discount', 'expiry_date', 
+                                                                                'quantity','product_id'])
+                    # not considering taxes, as ajeenckya told there no taxes for hospitals
+                    carry_frwd_amt = 0
+                    # sorting these lines with price_subtotal is mandatory, as products having less prices has to be paid with their amounts
+                    invoice_lines = sorted(invoice_lines, key=lambda k: k["price_subtotal"])
+                    for i_line in invoice_lines:
+                        for x in i_line:
+                            if isinstance(i_line.get(x), types.TupleType):
+                                i_line.update({x: i_line.get(x)[0]})
+                        i_line.update({'partner_id': voucher.insurance_policy_id.partner_id.id})
+                        if not line.reconcile:
+    #                         method to be used in case tax needs to be calculated
+    #                         tax_obj = self.pool.get('account.tax')
+    #                         tax_obj.compute_all(cr, uid, tax_obj.browse(cr, uid, i_line['invoice_line_tax_id']), price, line.quantity, product=line.product_id, partner=line.invoice_id.partner_id)
+                            i_line.update({'price_unit': line.amount / len(invoice_lines),
+                                           'price_subtotal': line.amount / len(invoice_lines)})
+                        elif line.reconcile and line.move_line_id.invoice.amount_total > voucher.amount:
+                            divided_amount = line.amount / len(invoice_lines) + carry_frwd_amt
+                            if divided_amount > i_line.get('price_subtotal'):
+                                carry_frwd_amt = divided_amount - i_line.get('price_subtotal')
+                                print "carry_frwd_amt", carry_frwd_amt
+                                i_line.update({'price_unit': i_line.get('price_unit'),
+                                               'price_subtotal': i_line.get('price_subtotal')})
+                            else:
+                                i_line.update({'price_unit': divided_amount,
+                                               'price_subtotal': divided_amount})
+                        invoice_line_values.append((0, 0, i_line))
+#             if voucher.amount < voucher.invoice_id.amount_total:
+#                 raise osv.except_osv(_('Error!'),
+#                                         _('You can not use %s payment method for partial payment.')%(voucher.journal_id.name))
+#             else:
+            res = super(account_voucher, self).proforma_voucher(cr, uid, ids, context)
+   
+            if voucher.invoice_id:
+#                sale_advance_payment_inv_id = sale_advance_payment_inv_pool.create(cr, uid, wizard_vals)
+                cr.execute('select order_id from sale_order_invoice_rel where invoice_id=%d'%(voucher.invoice_id.id))
+                result = cr.fetchone()
+                if result:
+                    order_id = result and result[0]
+                    if voucher.invoice_id:
                         default_vals =  {'partner_id': voucher.insurance_policy_id.partner_id.id,
                                          'journal_id': voucher.journal_id.id,
                                          'date_invoice': voucher.date,
                                          'insurance_invoice': True,
-                                         'dummy_journal': voucher.journal_id.id,
+#                                              'dummy_journal': voucher.journal_id.id,
                                          'origin': voucher.invoice_id.number,
-                                         'origin_name': voucher.partner_id.name + '-' + voucher.partner_id.ref}
+                                         'origin_name': voucher.partner_id.name + ('-' + voucher.partner_id.ref) if voucher.partner_id.ref else '',
+                                         'invoice_line': invoice_line_values}
                         new_invoice = self.pool.get('account.invoice').copy(cr, uid, voucher.invoice_id.id, default=default_vals)
-                return res
+                    cr.execute('insert into sale_order_invoice_rel(order_id, invoice_id) values (%d, %d)'%(order_id, new_invoice))
+                else:
+                    default_vals =  {'partner_id': voucher.insurance_policy_id.partner_id.id,
+                                     'journal_id': voucher.journal_id.id,
+                                     'date_invoice': voucher.date,
+                                     'insurance_invoice': True,
+#                                          'dummy_journal': voucher.journal_id.id,
+                                     'origin': voucher.invoice_id.number,
+                                     'origin_name': voucher.partner_id.name + ('-' + voucher.partner_id.ref) if voucher.partner_id.ref else '',
+                                     'invoice_line': invoice_line_values}
+                    new_invoice = self.pool.get('account.invoice').copy(cr, uid, voucher.invoice_id.id, default=default_vals)
+            return res
         else:
             return super(account_voucher, self).proforma_voucher(cr, uid, ids, context)
     
@@ -305,10 +344,10 @@ class account_voucher(osv.osv):
         #jss add balance amount
         default['value']['balance_amount'] = self._compute_balance_amount(cr, uid, default['value']['line_dr_ids'], default['value']['line_cr_ids'], price, ttype)
         
-        if(default['value']['balance_amount'] < 0):
-            default['warning'] = {
-                'title': _('Validation Error!'),
-                'message' : "Warning!! Amount Paid is more than the Amount Due. Do you want to continue?"
-            }
+#         if(default['value']['balance_amount'] < 0):
+#             default['warning'] = {
+#                 'title': _('Validation Error!'),
+#                 'message' : "Warning!! Amount Paid is more than the Amount Due. Do you want to continue?"
+#             }
         return default
     
